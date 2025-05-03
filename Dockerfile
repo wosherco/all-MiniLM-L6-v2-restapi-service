@@ -8,7 +8,19 @@ RUN apt-get update && apt-get install -y \
   pkg-config \
   libssl-dev \
   build-essential \
+  wget \
+  unzip \
   && rm -rf /var/lib/apt/lists/*
+
+# Download and install libtorch for build
+RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcpu.zip \
+  && unzip libtorch-cxx11-abi-shared-with-deps-2.4.0+cpu.zip \
+  && rm libtorch-cxx11-abi-shared-with-deps-2.4.0+cpu.zip \
+  && mv libtorch /usr/local/
+
+# Set environment variables for libtorch
+ENV LIBTORCH=/usr/local/libtorch
+ENV LD_LIBRARY_PATH=/usr/local/libtorch/lib:$LD_LIBRARY_PATH
 
 # Copy the source code
 COPY Cargo.toml Cargo.lock ./
@@ -45,12 +57,13 @@ RUN apt-get update && apt-get install -y \
   libssl3 \
   wget \
   unzip \
+  libgomp1 \
   && rm -rf /var/lib/apt/lists/*
 
 # Download and install libtorch
-RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.2.0%2Bcpu.zip \
-  && unzip libtorch-cxx11-abi-shared-with-deps-2.2.0+cpu.zip \
-  && rm libtorch-cxx11-abi-shared-with-deps-2.2.0+cpu.zip \
+RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcpu.zip \
+  && unzip libtorch-cxx11-abi-shared-with-deps-2.4.0+cpu.zip \
+  && rm libtorch-cxx11-abi-shared-with-deps-2.4.0+cpu.zip \
   && mv libtorch /usr/local/
 
 # Set environment variables for libtorch
