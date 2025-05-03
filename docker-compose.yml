@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  embedding-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - all-minilm-l6-v2-restapi-service
+    ports:
+      - "3000:3000"
+    environment:
+      - RUST_LOG=info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
